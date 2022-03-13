@@ -1,0 +1,81 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+
+	//create the layout of the baord using a 2d array:
+	int b[8][8] = { 0 };
+	int col = 0;
+	int row;
+	int config = 0;
+
+	//step 2: place queen on the upper left corner of the board:
+	b[0][0] = 1;
+
+	//step 3: step up your goto's:
+nc: col++;
+	if (col == 8)
+		goto print;
+	
+	row = -1;
+nr: row++;
+	if (row == 8)
+		goto backtrack;
+
+	//step 4 set up all test:
+
+	//row test:
+	//you want to make sure the col starts at 0 so int i = 0;
+	for (int i = 0; i < col; i++) {
+		if (b[row][i] == 1) 
+			goto nr;
+	}
+
+	//upwards diagnol test:
+	for (int i = 1; (row - i) >= 0 && (col - i) >= 0; i++) {
+		if (b[row - i][col - i] == 1)
+			goto nr;
+	}
+
+	//downwards diagnol test:
+	for (int i = 1; (row + i) < 8 && (col - i) >= 0; i++) {
+		if (b[row + i][col - i] == 1)
+			goto nr;
+	}
+
+	//passed all three test, now place the queen in that spot:
+	//goto the nc and iterate the same test again.
+	b[row][col] = 1;
+	goto nc;
+
+	// step 5 backtrack:
+backtrack: col--;
+	if (col == -1)
+		return 0;
+
+	//find the queen reset the row to 0 to find the queen.
+	row = 0;
+	while (b[row][col] != 1)
+		row++;
+
+	//reset it to an empty col and then goto the next row:
+	b[row][col] = 0;
+	goto nr;
+
+	//Last step print out the board:
+print: 
+	config++;
+	cout << "Configuaration #: " << config << endl << endl;
+
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			cout << b[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+
+	//always end with backtrack:
+	goto backtrack;
+
+}
